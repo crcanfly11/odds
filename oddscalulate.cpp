@@ -6,17 +6,10 @@ fixtures_base_odds::fixtures_base_odds(double win_odds, double shake_hands_odds,
 	team_odds_[shake_hands] = shake_hands_odds;
 	team_odds_[away_team_win] = lose_odds;
         
-<<<<<<< HEAD
-	strcpy_s(home_team_, home_team_name);
-	strcpy_s(away_team_, away_team_name);
-};
-    
-=======
 	strncpy(home_team_, home_team_name, sizeof(home_team_));
 	strncpy(away_team_, away_team_name, sizeof(away_team_));
 };
  
->>>>>>> origin/master
 double fixtures_base_odds::operator[] (int index) 
 {
 	if(index < max_odds_type) 
@@ -27,12 +20,6 @@ double fixtures_base_odds::operator[] (int index)
 
 //-----------------------------------------------------------------------
 
-<<<<<<< HEAD
-forecas_result::forecas_result(double odds, const char* result_msg) : odds_(odds), multiple_(0)
-{
-	strcpy_s(result_msg_, sizeof(result_msg_), result_msg);
-	yield_ = (odds - 1)*100;
-=======
 forecas_result::forecas_result(double odds, double probability, const char* result_msg) : 
 	odds_(odds), multiple_(0), income_(0), yield_(0), total_cost_(0), net_income_(0), flag_(0x00), probability_(probability), unit_profit_(0)
 {
@@ -78,25 +65,17 @@ void forecas_result::clear_dynamic_data()
 	net_income_ = 0;
 	yield_ = 0;  
 	income_ = 0;
->>>>>>> origin/master
 };
 
 //-----------------------------------------------------------------------
 
-<<<<<<< HEAD
-organizer::organizer() : htwin_(0), sh_(0), atwin_(0)
-=======
 organizer::organizer() : htwin_(0), sh_(0), atwin_(0), flag_(0), index_(0)
->>>>>>> origin/master
 {
     memset(htname_, 0, sizeof(htname_));
     memset(atname_, 0, sizeof(atname_));
 	memset(tmp_, 0, sizeof(tmp_));
 	memset(result_, 0, sizeof(result_));
         
-<<<<<<< HEAD
-    init();
-=======
     //init();
 };
 
@@ -107,44 +86,10 @@ organizer::~organizer()
 	delete optimization_result_; optimization_result_ = NULL;
 	delete regulator_; regulator_ = NULL;
 	delete position_; position_ = NULL;
->>>>>>> origin/master
 };
 
 void organizer::init()
 {
-<<<<<<< HEAD
-	char s1[20], s2[20], s3[20];
-
-    while(1) {     
-		cout<< "add new fixtures odds?(Y:yes/others:no)"<<endl;
-		cin>> tmp_;
-		cin.clear();
-		
-		if(!strcmp(tmp_, "Y") || !strcmp(tmp_, "y")) {
-            cout<< "input fixtures odds and team names."<< endl;
-			cin>> skipws>> s1>> s2>> s3>> htname_>> atname_;
-			htwin_ = atof(s1);
-			sh_ = atof(s2);
-			atwin_ = atof(s3);
-			cin.clear();
-
-            fixtures_base_odds* pbo = new fixtures_base_odds(htwin_, sh_, atwin_, htname_, atname_);
-            base_odds_.push_back(*pbo);
-        }
-		else
-			break;
-    }
-
-	if(base_odds_.size() < 2) return;
-    
-    forecas_calculate(base_odds_.begin(),base_odds_.end());
-
-	cout<< "every case of results."<< endl;
-	for_each(forecas_results_.begin(), forecas_results_.end(), boost::bind(&organizer::print, this, _1));
-
-	cout<< "How to buy? all in without loss or buy Specify combination."<< endl;
-
-=======
 	char s1[10], s2[10], s3[10], s4[10] , s5[10], s6[10];
 
     //while(1) {     
@@ -266,14 +211,10 @@ void organizer::clear()
 	optimization_result_->clear();
 	regulator_->clear();
 	position_->clear();	
->>>>>>> origin/master
 };
 
 void organizer::print(forecas_result_pair rpair)
 {
-<<<<<<< HEAD
-	std::cout<< rpair.first<< ". "<<rpair.second.get_result_msg()<< ": "<< rpair.second.get_result_odds()<< endl;
-=======
 	cout.setf(ios::fixed);
 	std::cout<< rpair.first<< ". "
 		<< rpair.second.get_result_msg()<< ": "
@@ -317,7 +258,6 @@ int organizer::check_odds()
 			return -1;
 	}
 	return 0;	
->>>>>>> origin/master
 };
 
 void organizer::forecas_calculate(base_odds_vector::iterator begin, base_odds_vector::iterator end)
@@ -325,28 +265,14 @@ void organizer::forecas_calculate(base_odds_vector::iterator begin, base_odds_ve
 	if(begin == end) return;
 
 	base_odds_vector::iterator second = begin + 1;    
-<<<<<<< HEAD
-    for_each(second, end, boost::bind(&organizer::set_forecas_result_map, this, *begin, _1));
-=======
     for_each(second, end, 
 		boost::bind(&organizer::set_forecas_result_map, this, *begin, _1));
->>>>>>> origin/master
     
     return forecas_calculate(second, end);
 };
 
 void organizer::set_forecas_result_map(fixtures_base_odds first, fixtures_base_odds second)
 {
-<<<<<<< HEAD
-	unsigned int num=0;
-	for(int i=0; i< max_odds_type; ++i) {
-		for(int j=0; j< max_odds_type; ++j) {
-			result_msg(i, j);
-			forecas_result* frt = new forecas_result(((first[i])*(second[j])), result_);
-			
-			num++;
-			forecas_results_.insert(forecas_result_pair(num, *frt));
-=======
 	for(int i=0; i< max_odds_type; ++i) {
 		for(int j=0; j< max_odds_type; ++j) {
 			result_msg(i, j);
@@ -354,7 +280,6 @@ void organizer::set_forecas_result_map(fixtures_base_odds first, fixtures_base_o
 			frt.set_flag(flag_);
 
 			forecas_base_results_.insert(forecas_result_pair(++index_, frt));
->>>>>>> origin/master
 		}
 	}
 };
@@ -362,15 +287,6 @@ void organizer::set_forecas_result_map(fixtures_base_odds first, fixtures_base_o
 void organizer::result_msg(int first, int second)
 {
 	memset(result_, 0, sizeof(result_));
-<<<<<<< HEAD
-	strcat_s(result_,sizeof(result_),get_result_flag(first));
-	strcat_s(result_,sizeof(result_),get_result_flag(second));
-};
-
-const char* organizer::get_result_flag(int index)
-{
-	switch(index) {
-=======
 	strncat(result_, msg_type(first), sizeof(result_));
 	strncat(result_, msg_type(second), sizeof(result_));
 
@@ -382,25 +298,17 @@ const char* organizer::msg_type(int index)
 {
 	switch (index)
 	{
->>>>>>> origin/master
 	case 0:
 		return "HW";
 	case 1:
 		return "SH";
 	case 2:
-<<<<<<< HEAD
-		return "HL";
-=======
 		return "AW";
->>>>>>> origin/master
 	default:
 		return "N";
 	}
 };
 
-<<<<<<< HEAD
-//-----------------------------------------------------------------------
-=======
 int organizer::flag_type(int index)
 {
 	switch (index)
@@ -743,4 +651,3 @@ void regulator::init_results(forecas_result& rpair)
 };
 
 //-----------------------------------------------------------------------
->>>>>>> origin/master
